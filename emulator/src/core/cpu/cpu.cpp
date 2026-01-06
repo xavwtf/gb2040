@@ -18,12 +18,12 @@ CPU::CPU(Console& console)
     logFile.open("cpu.log", std::ios::trunc | std::ios::out);
 }
 
-inline void CPU::push(uint16_t val) {
+void CPU::push(uint16_t val) {
     SP -= 2;
     console.mmu.write16(SP, val);
 }
 
-inline uint16_t CPU::pop(void) {
+uint16_t CPU::pop(void) {
     uint16_t val = console.mmu.read16(SP);
     SP += 2;
 
@@ -622,18 +622,18 @@ void CPU::initCbInstrTable(void) {
     cbInstrTable[0xFF] = &CPU::SET_7_A;
 }
 
-inline void CPU::setFlag(FlagMask flag, bool val) {
+void CPU::setFlag(FlagMask flag, bool val) {
     if (val) AF.lo |= 1 << flag;
     else AF.lo &= ~(1 << flag);
 }
 
-inline bool CPU::getFlag(FlagMask flag) {
+bool CPU::getFlag(FlagMask flag) {
     return (AF.lo >> flag) & 1;
 }
 
-inline uint8_t CPU::fetch8(void) {
+uint8_t CPU::fetch8(void) {
     uint8_t ret = console.mmu.read8(PC);
-    PC += haltBug;
+    PC += !haltBug;
     haltBug = false;
 
     return ret;
