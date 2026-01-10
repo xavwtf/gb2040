@@ -45,14 +45,14 @@ Console::Console(Platform* platform, ROMSource* romSource)
         case CartType::MBC3_TIMER_RAM_BATTERY:
             mbc = std::make_unique<MBC3>(*this, romSource, header.cartType);
             break;
-        // case CartType::MBC5:
-        // case CartType::MBC5_RAM:
-        // case CartType::MBC5_RAM_BATTERY:
-        // case CartType::MBC5_RUMBLE:
-        // case CartType::MBC5_RUMBLE_RAM:
-        // case CartType::MBC5_RUMBLE_RAM_BATTERY:
-        //     mbc = std::make_unique<MBC5>(*this, rom, header.cartType);
-        //     break;
+        case CartType::MBC5:
+        case CartType::MBC5_RAM:
+        case CartType::MBC5_RAM_BATTERY:
+        case CartType::MBC5_RUMBLE:
+        case CartType::MBC5_RUMBLE_RAM:
+        case CartType::MBC5_RUMBLE_RAM_BATTERY:
+            mbc = std::make_unique<MBC5>(*this, romSource, header);
+            break;
         default:
             mbc = std::make_unique<NoMBC>(*this, romSource, header.cartType);
             break;
