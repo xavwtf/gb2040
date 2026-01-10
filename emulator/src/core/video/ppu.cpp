@@ -12,7 +12,8 @@ namespace GB2040::Core
 PPU::PPU(Console& console)
 : console(console), framebuffer(GB_WIDTH, GB_HEIGHT),
 mode(PPUMode::HBLANK), modeClock(0),
-prevHBlank(false), prevVBlank(false), prevOam(false), prevLyc(false) {
+prevHBlank(false), prevVBlank(false), prevOam(false), prevLyc(false),
+scx(0), scy(0) {
     // initialise VRAM
     memset(vram, 0, VRAM_SIZE);
     memset(oam, 0, OAM_SIZE);
