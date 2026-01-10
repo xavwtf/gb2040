@@ -1,7 +1,5 @@
 # gb2040-emu
 
-> Note: all tests in the `tests` directory are property of their respective developers. I do not claim ownership of any ROMs in `tests`.
-
 An emulator written for GB2040 - an attempt to build a homemade Game Boy using an RP2040 (well.. RP2350 now but that doesn't roll off the tongue as well)
 
 As of now it only supports DMG emulation, however later I may add GBC support.

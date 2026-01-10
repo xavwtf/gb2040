@@ -38,6 +38,17 @@ enum class CartType : uint8_t {
 class Console;
 class CartridgeHeader;
 
+struct RTC {
+    uint8_t  seconds = 0;
+    uint8_t  minutes = 0;
+    uint8_t  hours   = 0;
+    uint16_t days    = 0;
+    bool     halt    = false;
+    bool     carry   = false;
+
+    uint64_t lastUpdateUs = 0;
+};
+
 class IMBC { // abstract
 public:
     virtual uint8_t read8(uint16_t) = 0;
@@ -52,6 +63,7 @@ public:
     };
 
     virtual void save(void) {  };
+    virtual void tickRTC(void) {  };
 };
 
 class MBC1 : public IMBC {
@@ -79,17 +91,28 @@ public:
     uint8_t read8(uint16_t) override;
     void write8(uint16_t, uint8_t) override;
 
-    void save(void);
+    void save(void) override;
 private:
+    void tickRTC(void);
+    RTC parseRTC(void);
+
+    uint8_t readRTC(uint8_t);
+    void writeRTC(uint8_t, uint8_t);
+
     Console& console;
     ROMSource* romSource;
     RAMSource* ramSource;
 
+    RTC rtc;
+    RTC rtcLatched;
+
     uint8_t romBank = 1;
     uint8_t ramBank = 0;
+    uint8_t rtcReg  = 0;
     bool ramEnabled = false;
     bool rtcSelected = false;
-    uint8_t rtcReg = 0;
+    bool rtcLatchPrep = false;
+    bool rtcLatchValid = false;
 };
 
 class MBC5 : public IMBC {
