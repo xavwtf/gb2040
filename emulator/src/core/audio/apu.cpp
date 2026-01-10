@@ -88,7 +88,7 @@ void APU::setEnabled(bool enabled) {
 }
 
 StereoSample APU::mix(uint8_t pulse1, uint8_t pulse2, uint8_t wave, uint8_t noise) {
-    StereoSample sample { 0, 0 };
+    StereoSample sample { 128, 128 };
 
     if (!enabled) return sample;
 

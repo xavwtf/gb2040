@@ -7,8 +7,8 @@
 #include <cstdint>
 #include <cmath>
 
-#define SAMPLE_RATE 65536
-#define SAMPLE_FREQ 4194304 / SAMPLE_RATE
+#define SAMPLE_RATE 44100.0f
+#define SAMPLE_FREQ 4194304.0f / SAMPLE_RATE
 
 namespace GB2040::Core {
 
@@ -41,7 +41,7 @@ private:
     uint8_t divApu;
     uint32_t divApuTimer;
 
-    uint32_t sampleTimer;
+    float sampleTimer;
 };
 
 } // namespace GB2040::Core

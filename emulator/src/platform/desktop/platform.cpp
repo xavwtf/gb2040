@@ -94,7 +94,7 @@ public:
 
         // set up audio
         SDL_AudioSpec want {  };
-        want.freq = 65536;
+        want.freq = 44100;
         want.format = SDL_AUDIO_U8;
         want.channels = 2;
 
@@ -282,7 +282,7 @@ public:
 
         if (queued < SAMPLE_RATE / 10) {
             size_t padCount = (SAMPLE_RATE / 10) - queued;
-            std::vector<GB2040::Core::StereoSample> silence(padCount, { 0, 0 });
+            std::vector<GB2040::Core::StereoSample> silence(padCount, { 128, 128 });
             SDL_PutAudioStreamData(audioStream, silence.data(), padCount * sizeof(GB2040::Core::StereoSample));
         }
 
