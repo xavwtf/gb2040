@@ -29,11 +29,11 @@ Console::Console(Platform* platform, ROMSource* romSource)
     romSource->read8(0x104, reinterpret_cast<uint8_t*>(&header), sizeof(CartridgeHeader));
 
     switch (header.cartType) {
-        // case CartType::MBC1:
-        // case CartType::MBC1_RAM:
-        // case CartType::MBC1_RAM_BATTERY:
-        //     mbc = std::make_unique<MBC1>(*this, rom, header.cartType);
-        //     break;
+        case CartType::MBC1:
+        case CartType::MBC1_RAM:
+        case CartType::MBC1_RAM_BATTERY:
+            mbc = std::make_unique<MBC1>(*this, romSource, header);
+            break;
         case CartType::MBC2:
         case CartType::MBC2_BATTERY:
             mbc = std::make_unique<MBC2>(*this, romSource, header.cartType);

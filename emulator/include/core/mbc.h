@@ -67,11 +67,26 @@ public:
 
 class MBC1 : public IMBC {
 public:
-    MBC1(Console& console, uint8_t* romData, CartType cartType);
+    MBC1(Console& console, ROMSource* romSource, CartridgeHeader& cartHeader);
 
     uint8_t read8(uint16_t) override;
-
     void write8(uint16_t, uint8_t) override;
+
+    void save(void) override;
+private:
+    Console& console;
+    CartridgeHeader& header;
+
+    ROMSource* romSource;
+    RAMSource* ramSource;
+
+    uint16_t romBank = 1;
+    uint8_t ramBank = 0;
+
+    bool mode = false;
+
+    uint32_t ramSize = 0;
+    bool ramEnabled = false;
 };
 
 class MBC2 : public IMBC {

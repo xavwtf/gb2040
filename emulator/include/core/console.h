@@ -24,7 +24,7 @@ namespace GB2040::Core
 using GB2040::Platform::Platform;
 using GB2040::Platform::ROMSource;
 
-enum class GBMode { DMG, CGB }; // NB: since 23/12/25, gb2040 has become a DMG-only emulator. Remove later
+enum class GBMode { DMG, CGB };
 
 enum class Interrupt {
     VBLANK,

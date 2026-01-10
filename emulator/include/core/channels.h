@@ -10,7 +10,7 @@ namespace GB2040::Core
 
 class APU;
 
-class Channel {
+class IChannel {
 public:
     virtual void tick(void) = 0;
     virtual void lenTick(void) = 0;
@@ -24,7 +24,7 @@ private:
     virtual void init(void) = 0;
 };
 
-class PulseChannel : public Channel {
+class PulseChannel : public IChannel {
 public:
     void tick(void) override;
     void lenTick(void) override;
@@ -74,7 +74,7 @@ private:
     bool enabled = false;
 };
 
-class WaveChannel : public Channel {
+class WaveChannel : public IChannel {
 public:
     void tick(void) override;
     void lenTick(void) override;
@@ -108,7 +108,7 @@ private:
     bool enabled = false;
 };
 
-class NoiseChannel : public Channel {
+class NoiseChannel : public IChannel {
 public:
     void tick(void) override;
     void lenTick(void) override;
