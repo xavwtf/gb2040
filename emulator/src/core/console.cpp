@@ -18,12 +18,12 @@ Console::Console(Platform* platform, ROMSource* romSource)
   mmuPtr(std::make_unique<MMU>(*this)),
   timerPtr(std::make_unique<Timer>(*this)),
   ppuPtr(std::make_unique<PPU>(*this)),
-//apuPtr(std::make_unique<APU>(*this)),
+  apuPtr(std::make_unique<APU>(*this)),
   cpu(*cpuPtr),
   mmu(*mmuPtr),
   timer(*timerPtr),
   ppu(*ppuPtr),
-//apu(*apuPtr),
+  apu(*apuPtr),
   mode(GBMode::DMG),
   input(0xFF) {
     romSource->read8(0x104, reinterpret_cast<uint8_t*>(&header), sizeof(CartridgeHeader));
@@ -104,7 +104,7 @@ size_t Console::tick(void) {
     size_t cycles = cpu.tick();
     timer.incTimers(cycles);
     ppu.tick(cycles);
-    // apu.tick(cycles);
+    apu.tick(cycles);
 
     return cycles;
 }

@@ -58,26 +58,26 @@ class MBC1 : public IMBC {
 public:
     MBC1(Console& console, uint8_t* romData, CartType cartType);
 
-    uint8_t read8(uint16_t);
+    uint8_t read8(uint16_t) override;
 
-    void write8(uint16_t, uint8_t);
+    void write8(uint16_t, uint8_t) override;
 };
 
 class MBC2 : public IMBC {
 public:
     MBC2(Console& console, uint8_t* romData, CartType cartType);
 
-    uint8_t read8(uint16_t);
+    uint8_t read8(uint16_t) override;
 
-    void write8(uint16_t, uint8_t);
+    void write8(uint16_t, uint8_t) override;
 };
 
 class MBC3 : public IMBC {
 public:
     MBC3(Console& console, ROMSource* romSource, CartridgeHeader header);
 
-    uint8_t read8(uint16_t);
-    void write8(uint16_t, uint8_t);
+    uint8_t read8(uint16_t) override;
+    void write8(uint16_t, uint8_t) override;
 
     void save(void);
 private:
@@ -96,18 +96,18 @@ class MBC5 : public IMBC {
 public:
     MBC5(Console& console, uint8_t* romData, CartType cartType);
 
-    uint8_t read8(uint16_t);
+    uint8_t read8(uint16_t) override;
 
-    void write8(uint16_t, uint8_t);
+    void write8(uint16_t, uint8_t) override;
 };
 
 class NoMBC : public IMBC {
 public:
     NoMBC(Console& console, ROMSource* romSource, CartridgeHeader header);
 
-    uint8_t read8(uint16_t);
+    uint8_t read8(uint16_t) override;
 
-    void write8(uint16_t, uint8_t);
+    void write8(uint16_t, uint8_t) override;
 
 private:
     Console& console;

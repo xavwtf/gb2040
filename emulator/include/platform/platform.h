@@ -5,6 +5,7 @@
 #include <chrono>
 
 #include "core/graphics.h"
+#include "core/audio.h"
 
 namespace GB2040::Core { class Console; }
 
@@ -35,7 +36,7 @@ public:
     virtual uint64_t getClock(void) = 0;
     virtual bool doEvents(GB2040::Core::Console&) = 0;
     virtual void draw(GB2040::Core::Framebuffer&) = 0;
-    virtual void playAudio(int16_t*, size_t) = 0;
+    virtual void pushSamples(GB2040::Core::StereoSample*, size_t) = 0;
     virtual ROMSource* selectROM(void) = 0;
     virtual RAMSource* getSave(size_t) = 0;
     virtual void saveData(RAMSource*, void*, size_t) = 0;

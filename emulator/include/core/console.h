@@ -6,7 +6,7 @@
 #include "timer.h"
 #include "graphics.h"
 #include "ppu.h"
-// #include "apu.h"
+#include "apu.h"
 #include "../platform/platform.h"
 
 #include <cstdint>
@@ -16,7 +16,7 @@
 
 #define CYCLES_PER_FRAME 70224
 #define GB_CLOCK_SPEED 4194304
-#define GB_FRAME_TIME_US 1e6 / (GB_CLOCK_SPEED * 2) * CYCLES_PER_FRAME
+#define GB_FRAME_TIME_US 1e6 / (GB_CLOCK_SPEED * 1) * CYCLES_PER_FRAME
 
 namespace GB2040::Core
 {
@@ -77,13 +77,13 @@ public:
     std::unique_ptr<IMBC> mbc = nullptr; // initialised dynamically so no reference
     std::unique_ptr<Timer> timerPtr;
     std::unique_ptr<PPU> ppuPtr;
-    // std::unique_ptr<APU> apuPtr;
+    std::unique_ptr<APU> apuPtr;
 
     CPU& cpu;
     MMU& mmu;
     Timer& timer;
     PPU& ppu;
-    // APU& apu;
+    APU& apu;
 
     uint8_t input;
     bool inputSelectButtons;

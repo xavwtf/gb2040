@@ -1,6 +1,7 @@
 #include "platform/platform.h"
 
 #include "core/graphics.h"
+#include "core/audio.h"
 #include "core/console.h"
 
 #include <cstdint>
@@ -91,6 +92,26 @@ public:
         SDL_SetRenderLogicalPresentation(renderer, 160, 144, SDL_RendererLogicalPresentation::SDL_LOGICAL_PRESENTATION_INTEGER_SCALE);
         SDL_SetTextureScaleMode(texture, SDL_ScaleMode::SDL_SCALEMODE_NEAREST);
 
+        // set up audio
+        SDL_AudioSpec want {  };
+        want.freq = 65536;
+        want.format = SDL_AUDIO_U8;
+        want.channels = 2;
+
+        audioStream = SDL_OpenAudioDeviceStream(
+            SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK,
+            &want,
+            NULL,
+            nullptr
+        );
+
+        if (!audioStream) {
+            printf("Error initialising SDL: %s", SDL_GetError());
+            exit(1);
+        }
+
+        SDL_ResumeAudioStreamDevice(audioStream);
+
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
@@ -113,6 +134,7 @@ public:
         if (texture) SDL_DestroyTexture(texture);
         if (renderer) SDL_DestroyRenderer(renderer);
         if (window) SDL_DestroyWindow(window);
+        if (audioStream) SDL_DestroyAudioStream(audioStream);
         SDL_Quit();
     }
 
@@ -255,8 +277,16 @@ public:
         if (extraData && extraDataSize > 0) file.write(reinterpret_cast<char*>(extraData), extraDataSize);
     }
 
-    void playAudio(int16_t* samples, size_t count) override {
+    void pushSamples(GB2040::Core::StereoSample* samples, size_t count) override {
+        int queued = SDL_GetAudioStreamAvailable(audioStream) / sizeof(GB2040::Core::StereoSample);
 
+        if (queued < SAMPLE_RATE / 10) {
+            size_t padCount = (SAMPLE_RATE / 10) - queued;
+            std::vector<GB2040::Core::StereoSample> silence(padCount, { 0, 0 });
+            SDL_PutAudioStreamData(audioStream, silence.data(), padCount * sizeof(GB2040::Core::StereoSample));
+        }
+
+        SDL_PutAudioStreamData(audioStream, samples, count * sizeof(GB2040::Core::StereoSample));
     }
 
 private:
@@ -266,6 +296,7 @@ private:
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     SDL_Texture* texture = nullptr;
+    SDL_AudioStream* audioStream = nullptr;
 
     std::string romPath;
 

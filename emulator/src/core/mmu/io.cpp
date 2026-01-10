@@ -29,33 +29,33 @@ uint8_t MMU::readIo(uint16_t port) {
         case 0x12:
         case 0x13:
         case 0x14:
-            // TODO: audio channel 1
-            return 0x0;
+            return console.apu.pulse1.readReg(port - 0x10);
         case 0x16:
         case 0x17:
         case 0x18:
         case 0x19:
-            // TODO: audio channel 2
-            return 0x0;
+            return console.apu.pulse2.readReg(port - 0x16);
         case 0x1A:
         case 0x1B:
         case 0x1C:
         case 0x1D:
         case 0x1E:
         case 0x1F:
-            // TODO: audio channel 3
-            return 0x0;
+            return console.apu.wave.readReg(port - 0x1A);
         case 0x20:
         case 0x21:
         case 0x22:
         case 0x23:
-            // TODO: audio channel 4
-            return 0x0;
+            return console.apu.noise.readReg(port - 0x20);
         case 0x24:
+            return (console.apu.rVolume & 0x07) | ((console.apu.lVolume & 0x07) << 4);
         case 0x25:
+            return console.apu.pan;
         case 0x26:
-            // TODO: audio control
-            return 0x0;
+            return (console.apu.pulse1.enabled && console.apu.pulse1.dacEnabled) |
+                ((console.apu.pulse2.enabled && console.apu.pulse2.dacEnabled) << 1) |
+                ((console.apu.wave.enabled && console.apu.wave.dacEnabled) << 2) |
+                ((console.apu.noise.enabled && console.apu.noise.dacEnabled) << 3);
         case 0x30:
         case 0x31:
         case 0x32:
@@ -72,8 +72,7 @@ uint8_t MMU::readIo(uint16_t port) {
         case 0x3D:
         case 0x3E:
         case 0x3F:
-            // TODO: audio wave pattern registers
-            return 0x0;
+            return console.apu.wave.readReg(port - 0x1A);
         case 0x40:
             return console.ppu.lcdc;
         case 0x41:
@@ -134,13 +133,15 @@ void MMU::writeIo(uint16_t port, uint8_t val) {
         case 0x12:
         case 0x13:
         case 0x14:
-            // TODO: audio channel 1
+            if (!console.apu.enabled) return;
+            console.apu.pulse1.writeReg(port - 0x10, val);
             return;
         case 0x16:
         case 0x17:
         case 0x18:
         case 0x19:
-            // TODO: audio channel 2
+            if (!console.apu.enabled) return;
+            console.apu.pulse2.writeReg(port - 0x15, val); // account for missing sweep register
             return;
         case 0x1A:
         case 0x1B:
@@ -148,18 +149,27 @@ void MMU::writeIo(uint16_t port, uint8_t val) {
         case 0x1D:
         case 0x1E:
         case 0x1F:
-            // TODO: audio channel 3
+            if (!console.apu.enabled) return;
+            console.apu.wave.writeReg(port - 0x1A, val);
             return;
         case 0x20:
         case 0x21:
         case 0x22:
         case 0x23:
-            // TODO: audio channel 4
+            if (!console.apu.enabled) return;
+            console.apu.noise.writeReg(port - 0x20, val);
             return;
         case 0x24:
+            if (!console.apu.enabled) return;
+            console.apu.rVolume = val & 0x07;
+            console.apu.lVolume = (val >> 4) & 0x07;
+            return;
         case 0x25:
+            if (!console.apu.enabled) return;
+            console.apu.pan = val;
+            return;
         case 0x26:
-            // TODO: audio control
+            console.apu.setEnabled(val & 0x80); // handles disabling channels, clearing registers etc
             return;
         case 0x30:
         case 0x31:
@@ -177,7 +187,8 @@ void MMU::writeIo(uint16_t port, uint8_t val) {
         case 0x3D:
         case 0x3E:
         case 0x3F:
-            // TODO: audio wave pattern registers
+            if (!console.apu.enabled) return;
+            console.apu.wave.writeReg(port - 0x1A, val);
             return;
         case 0x40:
             console.ppu.lcdc = val;
@@ -216,7 +227,6 @@ void MMU::writeIo(uint16_t port, uint8_t val) {
             return;
         case 0x50:
             if (bootRomMapped && val != 0) {
-                printf("boot ROM unmapped\n");
                 bootRomMapped = false;
             }
             return;
