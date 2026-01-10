@@ -158,7 +158,10 @@ public:
                             fullscreen = !fullscreen;
                             SDL_SetWindowFullscreen(window, fullscreen);
                             break;
-
+                        case SDLK_M:
+                            audioEnabled = !audioEnabled;
+                            SDL_SetAudioStreamGain(audioStream, audioEnabled ? 1.0f : 0.0f);
+                            break;
                         case SDLK_Z: console.pressButton(Button::A); break;
                         case SDLK_X: console.pressButton(Button::B); break;
                         case SDLK_RETURN: console.pressButton(Button::START); break;
@@ -301,6 +304,7 @@ private:
     std::string romPath;
 
     bool fullscreen = false;
+    bool audioEnabled = true;
 };
 
 Platform* createPlatform(void) {
