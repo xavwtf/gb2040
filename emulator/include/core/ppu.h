@@ -52,7 +52,7 @@ private:
     static constexpr Colour dmgLut[4] {
         0xFF,
         0x92,
-        0x48,
+        0x49,
         0x00
     };
 
