@@ -63,7 +63,6 @@ public:
     };
 
     virtual void save(void) {  };
-    virtual void tickRTC(void) {  };
 };
 
 class MBC1 : public IMBC {
@@ -77,16 +76,27 @@ public:
 
 class MBC2 : public IMBC {
 public:
-    MBC2(Console& console, uint8_t* romData, CartType cartType);
+    MBC2(Console& console, ROMSource* romSource, CartType cartType);
 
     uint8_t read8(uint16_t) override;
-
     void write8(uint16_t, uint8_t) override;
+
+    void save(void) override;
+private:
+    Console& console;
+    CartType cartType;
+
+    ROMSource* romSource;
+    RAMSource* ramSource;
+    
+    uint8_t romBank = 1;
+
+    bool ramEnabled = false;
 };
 
 class MBC3 : public IMBC {
 public:
-    MBC3(Console& console, ROMSource* romSource, CartridgeHeader header);
+    MBC3(Console& console, ROMSource* romSource, CartType cartType);
 
     uint8_t read8(uint16_t) override;
     void write8(uint16_t, uint8_t) override;
@@ -100,6 +110,7 @@ private:
     void writeRTC(uint8_t, uint8_t);
 
     Console& console;
+    CartType cartType;
     ROMSource* romSource;
     RAMSource* ramSource;
 
@@ -126,7 +137,7 @@ public:
 
 class NoMBC : public IMBC {
 public:
-    NoMBC(Console& console, ROMSource* romSource, CartridgeHeader header);
+    NoMBC(Console& console, ROMSource* romSource, CartType cartType);
 
     uint8_t read8(uint16_t) override;
 

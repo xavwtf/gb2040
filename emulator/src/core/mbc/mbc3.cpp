@@ -10,8 +10,10 @@ namespace GB2040::Core
 
 using GB2040::Platform::RAMSource;
 
-MBC3::MBC3(Console& console, ROMSource* romSource, CartridgeHeader header)
+MBC3::MBC3(Console& console, ROMSource* romSource, CartType cartType)
 : console(console), romSource(romSource) {
+    this->cartType = cartType;
+
     ramSource = console.platform->getSave(32768 + sizeof(RTC));
 
     rtc = parseRTC();
@@ -83,6 +85,10 @@ void MBC3::write8(uint16_t addr, uint8_t val) {
 }
 
 void MBC3::save(void) {
+    if (cartType != CartType::MBC3_RAM_BATTERY &&
+         cartType != CartType::MBC3_TIMER_BATTERY &&
+          cartType != CartType::MBC3_TIMER_RAM_BATTERY) return;
+
     ramSource->write8(
         ramSource->size() - sizeof(RTC),
         reinterpret_cast<uint8_t*>(&rtc),

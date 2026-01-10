@@ -8,9 +8,9 @@
 namespace GB2040::Core
 {
 
-NoMBC::NoMBC(Console& console, GB2040::Platform::ROMSource* romSource, CartridgeHeader header)
+NoMBC::NoMBC(Console& console, GB2040::Platform::ROMSource* romSource, CartType cartType)
 : console(console), romSource(romSource) {
-    memset(ram, 0, 8192);
+    memset(ram, 0, sizeof(ram));
 }
 
 uint8_t NoMBC::read8(uint16_t addr) {
