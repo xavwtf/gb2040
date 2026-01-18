@@ -60,7 +60,7 @@ void MBC2::write8(uint16_t addr, uint8_t val) {
 
 void MBC2::save() {
     if (cartType == CartType::MBC2_BATTERY) {
-        console.platform->saveData(ramSource, nullptr, 0);
+        console.platform->saveData(ramSource);
     }
 }
 

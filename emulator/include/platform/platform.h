@@ -39,7 +39,7 @@ public:
     virtual void pushSamples(GB2040::Core::StereoSample*, size_t) = 0;
     virtual ROMSource* selectROM(void) = 0;
     virtual RAMSource* getSave(size_t) = 0;
-    virtual void saveData(RAMSource*, void*, size_t) = 0;
+    virtual void saveData(RAMSource*) = 0;
 };
     
 Platform* createPlatform(void); // platform-specific factory

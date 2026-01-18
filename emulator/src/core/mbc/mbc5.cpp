@@ -87,7 +87,7 @@ void MBC5::save(void) {
     if (header.cartType != CartType::MBC5_RAM_BATTERY &&
          header.cartType != CartType::MBC5_RUMBLE_RAM_BATTERY) return;
 
-    console.platform->saveData(ramSource, nullptr, 0);
+    console.platform->saveData(ramSource);
 }
 
 } // namespace GB2040::Core

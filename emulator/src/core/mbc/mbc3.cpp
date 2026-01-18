@@ -95,7 +95,7 @@ void MBC3::save(void) {
         sizeof(RTC)
     );
 
-    console.platform->saveData(ramSource, nullptr, 0);
+    console.platform->saveData(ramSource);
 }
 
 RTC MBC3::parseRTC(void) {

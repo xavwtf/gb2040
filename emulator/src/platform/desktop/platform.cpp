@@ -261,10 +261,10 @@ public:
         return new RAMRAM(buffer);
     }
 
-    void saveData(RAMSource* data, void* extraData, size_t extraDataSize) override {
+    void saveData(RAMSource* data) override {
         RAMRAM* ram = static_cast<RAMRAM*>(data);
 
-        size_t size = data->size() + extraDataSize;
+        size_t size = data->size();
 
         std::filesystem::path p(romPath);
         p.replace_extension(".sav");
@@ -276,8 +276,6 @@ public:
         std::vector<uint8_t> buffer(data->size());
         data->read8(0, buffer.data(), data->size());
         file.write(reinterpret_cast<char*>(buffer.data()), buffer.size());
-
-        if (extraData && extraDataSize > 0) file.write(reinterpret_cast<char*>(extraData), extraDataSize);
     }
 
     void pushSamples(GB2040::Core::StereoSample* samples, size_t count) override {

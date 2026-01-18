@@ -82,7 +82,7 @@ void MBC1::write8(uint16_t addr, uint8_t val) {
 void MBC1::save(void) {
     if (header.cartType != CartType::MBC1_RAM_BATTERY) return;
 
-    console.platform->saveData(ramSource, nullptr, 0);
+    console.platform->saveData(ramSource);
 }
 
 } // namespace GB2040::Core
