@@ -14,8 +14,6 @@ CPU::CPU(Console& console)
     
     initInstrTable();
     initCbInstrTable();
-
-    logFile.open("cpu.log", std::ios::trunc | std::ios::out);
 }
 
 void CPU::push(uint16_t val) {

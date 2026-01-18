@@ -1,10 +1,10 @@
-# Generated Cmake Pico project file
-
 cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+option(PICO_BUILD "Build for RP2040/RP2350" OFF)
 
 file(GLOB_RECURSE CORE_SOURCES "src/core/*.cpp")
 
@@ -13,7 +13,7 @@ set(SHARED_SOURCES
     ${CORE_SOURCES}
 )
 
-if(PICO_BUILD)
+if (PICO_BUILD)
     if(WIN32)
         set(USERHOME $ENV{USERPROFILE})
     else()
@@ -27,10 +27,13 @@ if(PICO_BUILD)
 
     # Pull in Raspberry Pi Pico SDK (must be before project)
     include(pico_sdk_import.cmake)
+endif()
 
+project(gb2040 C CXX ASM)
+
+if(PICO_BUILD)
     # ========= pico target =========
 
-    project(gb2040 C CXX ASM)
     pico_sdk_init()
 
     # add rp2040 executable
@@ -51,32 +54,30 @@ if(PICO_BUILD)
 else()
     # ========= desktop target =========
 
-    project(gb2040_desktop C CXX ASM)
-
     # add desktop executable
-    add_executable(gb2040_desktop
+    add_executable(gb2040
         ${SHARED_SOURCES}
         src/platform/desktop/platform.cpp
     )
 
     # do the same for desktop, include SDL
-    target_include_directories(gb2040_desktop
+    target_include_directories(gb2040
         PUBLIC 
             ${CMAKE_CURRENT_SOURCE_DIR}/include
             ${CMAKE_CURRENT_SOURCE_DIR}/libs/SDL3/include
     )
 
     # pull in desktop deps
-    target_link_libraries(gb2040_desktop
+    target_link_libraries(gb2040
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/libs/SDL3/lib/x64/SDL3.lib
     )
 
     # copy SDL3.dll next to desktop executable
-    add_custom_command(TARGET gb2040_desktop POST_BUILD
+    add_custom_command(TARGET gb2040 POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_CURRENT_SOURCE_DIR}/libs/SDL3/lib/x64/SDL3.dll
-        $<TARGET_FILE_DIR:gb2040_desktop>
+        $<TARGET_FILE_DIR:gb2040>
     )
 
 endif()

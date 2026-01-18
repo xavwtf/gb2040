@@ -1,51 +1,76 @@
 #include "platform/platform.h"
-#include "platform/config.h"
+
+#include "core/graphics.h"
+#include "core/audio.h"
+#include "core/console.h"
 
 #include <cstdint>
 #include <string>
-#include "pico/stdlib.h"
 
 namespace GB2040::Platform
 {
 
+ROMSource::~ROMSource(void) = default;
+
 Platform::~Platform(void) = default;
 
 class PicoPlatform : public Platform {
-    void init(int argc = 0, char** argv = nullptr) override {
-        // TODO: turn on LED, initialise spi, etc
-        // init stdio
-        stdio_init_all();
+public:
+    void init(int argc, char** argv) override {
+        
+    }
 
-        // initialise led gpio pin
-        gpio_init(PICO_DEFAULT_LED_PIN);
-        gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
-
-        gpio_put(PICO_DEFAULT_LED_PIN, true);
+    void run(void) override {
+        
     }
 
     void deinit(void) override {
-        // TODO: turn off LED, cleanup, whatever
-
-        gpio_put(PICO_DEFAULT_LED_PIN, false);   
+        
     }
 
-    void wait(uint32_t ms) override {
-        sleep_ms(ms);
+    void wait(uint64_t us) override {
+        
     }
 
-    bool doEvents(void) override {
-        // TODO: listen for power button or something
-        return true
+    bool doEvents(GB2040::Core::Console& console) override {
+        
     }
 
-    std::string selectROM(void) override {
-        // TODO: file selection menu
-        return "rom.gb";
+    uint64_t getClock(void) {
+        
     }
+
+    void draw(GB2040::Core::Framebuffer& framebuffer) override {
+        
+    }
+
+    ROMSource* selectROM(void) override {
+        
+    }
+
+    RAMSource* getSave(size_t size) override {
+        
+    }
+
+    void saveData(RAMSource* data) override {
+        
+    }
+
+    void pushSamples(GB2040::Core::StereoSample* samples, size_t count) override {
+        
+    }
+
+private:
+    int argc;
+    char** argv;
+
+    std::string romPath;
+
+    bool audioEnabled = true;
 };
 
 Platform* createPlatform(void) {
     return new PicoPlatform();
 }
 
-} // namespace GP2040::Platform
+} // namespace GB2040::Platform
