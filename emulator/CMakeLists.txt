@@ -26,6 +26,7 @@ if (PICO_BUILD)
     set(PICO_BOARD pico CACHE STRING "Board type")
 
     # Pull in Raspberry Pi Pico SDK (must be before project)
+    set(PICOTOOL_NO_BUILD 1 CACHE INTERNAL "")
     include(pico_sdk_import.cmake)
 endif()
 
@@ -36,8 +37,13 @@ if(PICO_BUILD)
 
     pico_sdk_init()
 
+    add_executable(gb2040)
+
+    file(GLOB_RECURSE PIO_SOURCES "src/*.pio")
+    pico_generate_pio_header(gb2040 ${PIO_SOURCES})
+
     # add rp2040 executable
-    add_executable(gb2040
+    target_sources(gb2040 PRIVATE
         ${SHARED_SOURCES}
         src/platform/pico/platform.cpp
     )
@@ -48,7 +54,7 @@ if(PICO_BUILD)
     )
 
     # pull in pico deps
-    target_link_libraries(gb2040 pico_stdlib)
+    target_link_libraries(gb2040 pico_stdlib hardware_pio)
 
     pico_add_extra_outputs(gb2040)
 else()
