@@ -82,7 +82,7 @@ public:
             exit(1);
         }
 
-        texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB332, SDL_TEXTUREACCESS_STREAMING, 160, 144);
+        texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, GB_WIDTH, GB_HEIGHT);
 
         if (!texture) {
             printf("Error initialising SDL: %s", SDL_GetError());
@@ -207,7 +207,7 @@ public:
 
         GB2040::Core::Colour* dst = (GB2040::Core::Colour*)texPixels;
         for (int y = 0; y < texture->h; y++) {
-            GB2040::Core::Colour* row = dst + y * pitch;
+            GB2040::Core::Colour* row = dst + y * (pitch / sizeof(GB2040::Core::Colour));
             for (int x = 0; x < texture->w; x++) {
                 row[x] = framebuffer.getPixel(x, y);
             }

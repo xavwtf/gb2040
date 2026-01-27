@@ -6,7 +6,7 @@
 namespace GB2040::Core
 {
 
-typedef uint8_t Colour;
+typedef uint16_t Colour;
 
 class Framebuffer {
 public:
@@ -16,7 +16,8 @@ public:
 
     void setPixel(unsigned int, unsigned int, Colour);
     Colour getPixel(unsigned int, unsigned int);
-    void getDiff(Framebuffer&, Framebuffer&);
+    Colour* data(void);
+    size_t size(void);
 
     unsigned int getWidth(void);
     unsigned int getHeight(void);

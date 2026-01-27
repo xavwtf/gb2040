@@ -10,7 +10,7 @@ Framebuffer::Framebuffer(unsigned int w, unsigned int h)
 }
 
 void Framebuffer::clear() {
-    Colour white = 0xFF;
+    Colour white = 0xFFFF;
 
     std::fill(fb.begin(), fb.end(), white);
 }
@@ -29,31 +29,12 @@ void Framebuffer::setPixel(unsigned int x, unsigned int y, Colour colour) {
     fb[idx] = colour;
 }
 
-void Framebuffer::getDiff(Framebuffer& other, Framebuffer& out) {
-    unsigned int minW = std::min(w, other.w);
-    unsigned int minH = std::min(h, other.h);
+Colour* Framebuffer::data(void) {
+    return fb.data();
+}
 
-    for (int y = 0; y < minH; y++) {
-        for (int x = 0; x < minW; x++) {
-            if (getPixel(x, y) != other.getPixel(x, y)) {
-                out.setPixel(x, y, other.getPixel(x, y));
-            }
-        }
-    }
-
-    // extra rows
-    for (int y = minH; y < other.h; y++) {
-        for (int x = 0; x < other.w; x++) {
-            out.setPixel(x, y, other.getPixel(x, y));
-        }
-    }
-
-    // extra columns
-    for (int y = 0; y < other.h; y++) {
-        for (int x = minW; x < other.w; x++) {
-            out.setPixel(x, y, other.getPixel(x, y));
-        }
-    }
+size_t Framebuffer::size(void) {
+    return fb.size();
 }
 
 unsigned int Framebuffer::getWidth(void) {

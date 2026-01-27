@@ -50,10 +50,10 @@ public:
     uint8_t readStat(void);
 private:
     static constexpr Colour dmgLut[4] {
-        0xFF,
-        0x92,
-        0x49,
-        0x00
+        0xFFFF,
+        0xAD55,
+        0x52AA,
+        0x0000
     };
 
     uint16_t getMapBase(PPULayer);
