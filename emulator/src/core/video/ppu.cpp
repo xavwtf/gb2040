@@ -10,7 +10,7 @@ namespace GB2040::Core
 {
 
 PPU::PPU(Console& console)
-: console(console), framebuffer(GB_WIDTH, GB_HEIGHT),
+: console(console), framebuffer(console.platform->getBackBuffer()),
 mode(PPUMode::HBLANK), modeClock(0),
 prevHBlank(false), prevVBlank(false), prevOam(false), prevLyc(false),
 scx(0), scy(0) {
@@ -76,7 +76,7 @@ void PPU::hBlank(void) {
 
             console.requestInterrupt(Interrupt::VBLANK);
             mode = PPUMode::VBLANK;
-            console.platform->draw(framebuffer);
+            console.platform->draw();
         } else {
             mode = PPUMode::OAM_SCAN;
         }
@@ -128,7 +128,7 @@ void PPU::renderScanline(void) {
         }
     } else {
         for (int x = 0; x < GB_WIDTH; x++) {
-            framebuffer.setPixel(x, ly, dmgLut[0]);
+            framebuffer->setPixel(x, ly, dmgLut[0]);
             bgLineIndices[x] = 0;
         }
     }
@@ -201,7 +201,7 @@ void PPU::renderScanlinePixel(PPULayer layer, uint8_t x) {
 
     Colour finalColour = dmgLut[(bgp >> colourIdx * 2) & 0x03];
 
-    framebuffer.setPixel(x, ly, finalColour);
+    framebuffer->setPixel(x, ly, finalColour);
 }
 
 void PPU::renderScanlineObjects(void) {
@@ -257,7 +257,7 @@ void PPU::renderScanlineObjects(void) {
                 Colour finalColour = dmgLut[(obp >> colourIdx * 2) & 0x03];
 
                 if (colourIdx) {
-                    framebuffer.setPixel(absX, ly, finalColour);
+                    framebuffer->setPixel(absX, ly, finalColour);
                     objectPixelsDrawn[absX] = true;
                 }
             }

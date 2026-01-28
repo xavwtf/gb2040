@@ -9,9 +9,6 @@
 
 #define OAM_SIZE       160
 
-#define GB_WIDTH       160
-#define GB_HEIGHT      144
-
 namespace GB2040::Core
 {
 
@@ -51,8 +48,8 @@ public:
 private:
     static constexpr Colour dmgLut[4] {
         0xFFFF,
-        0xAD55,
-        0x52AA,
+        0x55AD,
+        0xAA52,
         0x0000
     };
 
@@ -74,7 +71,7 @@ private:
 
     Console& console;
 
-    Framebuffer framebuffer;
+    Framebuffer*& framebuffer;
 
     bool prevHBlank;
     bool prevVBlank;

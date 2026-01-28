@@ -8,6 +8,9 @@ namespace GB2040::Core
 
 typedef uint16_t Colour;
 
+#define GB_WIDTH  160
+#define GB_HEIGHT 144
+
 class Framebuffer {
 public:
     Framebuffer(unsigned int, unsigned int);

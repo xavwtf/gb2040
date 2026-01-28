@@ -35,11 +35,20 @@ public:
     virtual void wait(uint64_t) = 0;
     virtual uint64_t getClock(void) = 0;
     virtual bool doEvents(GB2040::Core::Console&) = 0;
-    virtual void draw(GB2040::Core::Framebuffer&) = 0;
+    virtual GB2040::Core::Framebuffer*& getBackBuffer(void) { return back; }
+    virtual void draw(void) = 0;
     virtual void pushSamples(GB2040::Core::StereoSample*, size_t) = 0;
     virtual ROMSource* selectROM(void) = 0;
     virtual RAMSource* getSave(size_t) = 0;
     virtual void saveData(RAMSource*) = 0;
+protected:
+    GB2040::Core::Framebuffer fbA;
+    GB2040::Core::Framebuffer fbB;
+
+    GB2040::Core::Framebuffer* front;
+    GB2040::Core::Framebuffer* back;
+
+    Platform() : fbA(GB_WIDTH, GB_HEIGHT), fbB(GB_WIDTH, GB_HEIGHT), back(&fbA), front(&fbB) {  }
 };
     
 Platform* createPlatform(void); // platform-specific factory

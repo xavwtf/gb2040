@@ -200,7 +200,9 @@ public:
         return duration_cast<microseconds>(steady_clock::now().time_since_epoch()).count();
     }
 
-    void draw(GB2040::Core::Framebuffer& framebuffer) override {
+    void draw(void) override {
+        std::swap(front, back);
+
         void* texPixels;
         int pitch;
         SDL_LockTexture(texture, NULL, &texPixels, &pitch);
@@ -209,7 +211,8 @@ public:
         for (int y = 0; y < texture->h; y++) {
             GB2040::Core::Colour* row = dst + y * (pitch / sizeof(GB2040::Core::Colour));
             for (int x = 0; x < texture->w; x++) {
-                row[x] = framebuffer.getPixel(x, y);
+                GB2040::Core::Colour pixelLE = front->getPixel(x, y);
+                row[x] = (pixelLE << 8) | (pixelLE >> 8);
             }
         }
 
