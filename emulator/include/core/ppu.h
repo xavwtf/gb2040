@@ -73,37 +73,37 @@ private:
 
     Framebuffer*& framebuffer;
 
-    bool prevHBlank;
-    bool prevVBlank;
-    bool prevOam;
-    bool prevLyc;
+    bool prevHBlank = false;
+    bool prevVBlank = false;
+    bool prevOam = false;
+    bool prevLyc = false;
 
-    PPUMode mode;
-    uint32_t modeClock;
+    PPUMode mode = PPUMode::HBLANK;
+    uint32_t modeClock = 0;
 
     Sprite sprites[40];
 
     uint8_t bgLineIndices[GB_WIDTH];
     bool objectPixelsDrawn[GB_WIDTH];
 
-    uint8_t lcdc;
-    uint8_t stat;
+    uint8_t lcdc = 0x00;
+    uint8_t stat = 0x00;
 
-    uint8_t ly;
-    uint8_t lyc;
+    uint8_t ly = 0;
+    uint8_t lyc = 0;
 
-    uint8_t wly;
+    uint8_t wly = 0;
 
-    uint8_t scx;
-    uint8_t scy;
+    uint8_t scx = 0;
+    uint8_t scy = 0;
 
-    uint8_t wx;
-    uint8_t wy;
+    uint8_t wx = 0;
+    uint8_t wy = 0;
 
     // GB palette registers
-    uint8_t bgp;
-    uint8_t obp0;
-    uint8_t obp1;
+    uint8_t bgp = 0x00;
+    uint8_t obp0 = 0x00;
+    uint8_t obp1 = 0x00;
 
     uint8_t vram[VRAM_SIZE];
     uint8_t oam[OAM_SIZE];

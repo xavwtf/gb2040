@@ -26,22 +26,22 @@ private:
 
     friend MMU; // IO ports
 
-    bool enabled;
+    bool enabled = false;
 
-    uint8_t lVolume;
-    uint8_t rVolume;
+    uint8_t lVolume = 7;
+    uint8_t rVolume = 7;
 
-    uint8_t pan;
+    uint8_t pan = 0;
 
     Console& console;
     PulseChannel pulse1, pulse2;
     WaveChannel wave;
     NoiseChannel noise;
 
-    uint8_t divApu;
-    uint32_t divApuTimer;
+    uint8_t divApu = 0;
+    uint32_t divApuTimer = 8192;
 
-    float sampleTimer;
+    float sampleTimer = SAMPLE_FREQ;
 };
 
 } // namespace GB2040::Core

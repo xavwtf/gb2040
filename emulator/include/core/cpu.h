@@ -40,22 +40,20 @@ public:
     char* getDebug(void);
     void yieldCycles(size_t);
 
-    bool ime;
-    uint8_t ie;
-    uint8_t intFlag;
-    bool stopped;
+    bool ime = false;
+    uint8_t ie = 0;
+    uint8_t intFlag = 0;
+    bool stopped = false;
 
 private:
     Console& console;
 
-    bool halted;
-    bool haltBug;
+    bool halted = false;
+    bool haltBug = false;
 
-    bool eiPending; // interrupts only enable *after 1 instruction*
+    bool eiPending = false; // interrupts only enable *after 1 instruction*
 
-    size_t forceCycles;
-
-    std::ofstream logFile;
+    size_t forceCycles = 0;
 
     uint8_t execute(uint8_t);
 
@@ -714,7 +712,8 @@ private:
     uint8_t SET_7_A(void);
 
     RegisterPair AF, BC, DE, HL; // general use registers
-    uint16_t SP, PC; // PSW registers
+    uint16_t SP = 0xFFFE;
+    uint16_t PC = 0x0000; // PSW registers
 
     // instruction set
     OpcodeImpl instrTable[256];

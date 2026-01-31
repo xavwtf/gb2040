@@ -12,10 +12,10 @@ class Timer {
 public:
     Timer(Console&);
 
-    uint8_t tima;
+    uint8_t tima = 0;
 
-    uint8_t tac;
-    uint8_t tma;
+    uint8_t tac = 0;
+    uint8_t tma = 0;
 
     void incTimers(size_t);
     void resetSysCounter(void);
@@ -23,10 +23,10 @@ public:
 private:
     Console& console;
 
-    uint16_t sysCounter;
-    uint16_t timaCounter;
+    uint16_t sysCounter = 0;
+    uint16_t timaCounter = 0;
 
-    bool timaOverflow;
+    bool timaOverflow = false;
 };
 
 } // namespace GB2040::Core

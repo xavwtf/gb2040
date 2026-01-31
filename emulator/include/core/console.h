@@ -69,27 +69,21 @@ public:
 
     Platform* platform;
 
-    GBMode mode;
+    GBMode mode = GBMode::DMG;
     CartridgeHeader header;
 
-    std::unique_ptr<CPU> cpuPtr;
-    std::unique_ptr<MMU> mmuPtr;
-    std::unique_ptr<IMBC> mbc = nullptr; // initialised dynamically so no reference
-    std::unique_ptr<Timer> timerPtr;
-    std::unique_ptr<PPU> ppuPtr;
-    std::unique_ptr<APU> apuPtr;
+    CPU cpu;
+    IMBC* mbc;
+    MMU mmu;
+    Timer timer;
+    PPU ppu;
+    APU apu;
 
-    CPU& cpu;
-    MMU& mmu;
-    Timer& timer;
-    PPU& ppu;
-    APU& apu;
+    uint8_t input = 0xFF;
+    bool inputSelectButtons = false;
+    bool inputSelectDpad = false;
 
-    uint8_t input;
-    bool inputSelectButtons;
-    bool inputSelectDpad;
-
-    bool running;
+    bool running = false;
 
     static constexpr uint8_t bootRom[0x100] { // i reimplemented it guys trust
         0x31, 0xFE, 0xFF, 0xAF, 0x21, 0xFF, 0x9F, 0x32, 0xCB, 0x7C, 0x20, 0xFB, 0x21, 0x26, 0xFF, 0x0E,

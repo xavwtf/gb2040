@@ -14,16 +14,11 @@ namespace GB2040::Core {
 
 Console::Console(Platform* platform, ROMSource* romSource)
 : platform(platform),
-  cpuPtr(std::make_unique<CPU>(*this)),
-  mmuPtr(std::make_unique<MMU>(*this)),
-  timerPtr(std::make_unique<Timer>(*this)),
-  ppuPtr(std::make_unique<PPU>(*this)),
-  apuPtr(std::make_unique<APU>(*this)),
-  cpu(*cpuPtr),
-  mmu(*mmuPtr),
-  timer(*timerPtr),
-  ppu(*ppuPtr),
-  apu(*apuPtr),
+  cpu(*this),
+  mmu(*this),
+  timer(*this),
+  ppu(*this),
+  apu(*this),
   mode(GBMode::DMG),
   input(0xFF) {
     romSource->read8(0x104, reinterpret_cast<uint8_t*>(&header), sizeof(CartridgeHeader));
@@ -32,18 +27,18 @@ Console::Console(Platform* platform, ROMSource* romSource)
         case CartType::MBC1:
         case CartType::MBC1_RAM:
         case CartType::MBC1_RAM_BATTERY:
-            mbc = std::make_unique<MBC1>(*this, romSource, header);
+            mbc = new MBC1(*this, romSource, header);
             break;
         case CartType::MBC2:
         case CartType::MBC2_BATTERY:
-            mbc = std::make_unique<MBC2>(*this, romSource, header.cartType);
+            mbc = new MBC2(*this, romSource, header.cartType);
             break;
         case CartType::MBC3:
         case CartType::MBC3_RAM:
         case CartType::MBC3_RAM_BATTERY:
         case CartType::MBC3_TIMER_BATTERY:
         case CartType::MBC3_TIMER_RAM_BATTERY:
-            mbc = std::make_unique<MBC3>(*this, romSource, header.cartType);
+            mbc = new MBC3(*this, romSource, header.cartType);
             break;
         case CartType::MBC5:
         case CartType::MBC5_RAM:
@@ -51,10 +46,10 @@ Console::Console(Platform* platform, ROMSource* romSource)
         case CartType::MBC5_RUMBLE:
         case CartType::MBC5_RUMBLE_RAM:
         case CartType::MBC5_RUMBLE_RAM_BATTERY:
-            mbc = std::make_unique<MBC5>(*this, romSource, header);
+            mbc = new MBC5(*this, romSource, header);
             break;
         default:
-            mbc = std::make_unique<NoMBC>(*this, romSource, header.cartType);
+            mbc = new NoMBC(*this, romSource, header.cartType);
             break;
     }
 }
@@ -83,7 +78,7 @@ void Console::run(void) {
 
         target += GB_FRAME_TIME_US;
 
-        if (!platform->doEvents(*this)) running = false;
+        running = platform->doEvents(*this);
 
         now = platform->getClock();
         if (target > now) platform->wait(target - now);

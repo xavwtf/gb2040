@@ -25,7 +25,7 @@ public:
 private:
     Console& console;
 
-    bool bootRomMapped;
+    bool bootRomMapped = true;
 
     uint8_t internalWram[WRAM_SIZE];
     uint8_t hram[HRAM_SIZE];
