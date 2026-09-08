@@ -5,6 +5,7 @@
 #include "core/console.h"
 
 #include <cstdint>
+#include <cstring>
 #include <string>
 #include <array>
 #include <filesystem>
@@ -24,6 +25,10 @@ public:
     ~RAMROM(void) = default;
 
     void read(uint32_t addr, uint8_t* buffer, size_t size) {
+        if (addr + size > rom.size()) {
+            memset(buffer, 0xFF, size);
+            return;
+        }
         memcpy(buffer, rom.data() + addr, size);
     }
 
@@ -45,6 +50,10 @@ public:
     ~RAMRAM(void) = default;
 
     void read(uint32_t addr, uint8_t* buffer, size_t size) {
+        if (addr + size > sram.size()) {
+            memset(buffer, 0xFF, size);
+            return;
+        }
         memcpy(buffer, sram.data() + addr, size);
     }
 
@@ -53,6 +62,7 @@ public:
     }
 
     void write8(uint32_t addr, uint8_t* buffer, size_t size) {
+        if (addr + size > sram.size()) return;
         memcpy(sram.data() + addr, buffer, size);
     }
 
