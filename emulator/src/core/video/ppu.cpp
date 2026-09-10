@@ -52,15 +52,22 @@ PPU::PPU(Console& console)
 }
 
 void PPU::tick(size_t cycles) {
-    modeClock += cycles;
-
     if (!(lcdc & 0x80)) {
         // ppu disabled
         modeClock = 0;
         ly = 0;
+        mode = PPUMode::HBLANK;
+        wly = 0;
+
+        prevHBlank = false;
+        prevVBlank = false;
+        prevOam = false;
+        prevLyc = false;
 
         return;
     }
+
+    modeClock += cycles;
 
     switch (mode) {
         case PPUMode::HBLANK:
@@ -188,7 +195,7 @@ void PPU::renderScanlineLayer(PPULayer layer) {
     uint8_t tileY = bgY >> 3;
     uint8_t pixelY = bgY & 7;
 
-    uint8_t cachedTileId = 0xFF;
+    int16_t cachedTileId = -1;
     uint16_t cachedTileAddr = 0;
     uint8_t cachedLow = 0;
     uint8_t cachedHigh = 0;
@@ -315,14 +322,16 @@ void PPU::renderScanlineObjects(void) {
         bool priority = sprite.attrs & 0x80;
         bool horFlip = sprite.attrs & 0x20;
 
-        int16_t spriteScreenX = sprite.x - 8;
-        uint8_t startRelX = 0;
-        uint8_t endRelX = 8;
+        int spriteScreenX = (int)sprite.x - 8;
+        int startRelX = 0;
+        int endRelX = 8;
         if (spriteScreenX < 0) startRelX = -spriteScreenX;
         if (spriteScreenX + 8 > GB_WIDTH) endRelX = GB_WIDTH - spriteScreenX;
+        if (endRelX <= startRelX) continue;
 
-        for (uint8_t relX = startRelX; relX < endRelX; relX++) {
-            uint8_t absX = spriteScreenX + relX;
+        for (int relX = startRelX; relX < endRelX; relX++) {
+            int absX = spriteScreenX + relX;
+            if (absX < 0 || absX >= GB_WIDTH) continue;
 
             if (!objectPixelsDrawn[absX] && (priority == false || bgLineIndices[absX] == 0)) {
 

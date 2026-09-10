@@ -24,9 +24,8 @@ private:
     Console& console;
 
     uint16_t sysCounter = 0;
-    uint16_t timaCounter = 0;
 
-    bool timaOverflow = false;
+    int overflowDelay = 0;
 };
 
 } // namespace GB2040::Core

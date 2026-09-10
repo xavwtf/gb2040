@@ -34,7 +34,7 @@ uint8_t MMU::readIo(uint16_t port) {
         case 0x17:
         case 0x18:
         case 0x19:
-            return console.apu.pulse2.readReg(port - 0x16);
+            return console.apu.pulse2.readReg(port - 0x15); // account for missing sweep register
         case 0x1A:
         case 0x1B:
         case 0x1C:
@@ -52,7 +52,8 @@ uint8_t MMU::readIo(uint16_t port) {
         case 0x25:
             return console.apu.pan;
         case 0x26:
-            return (console.apu.pulse1.enabled && console.apu.pulse1.dacEnabled) |
+            return (console.apu.enabled ? 0x80 : 0x00) | 0x70 |
+                (console.apu.pulse1.enabled && console.apu.pulse1.dacEnabled) |
                 ((console.apu.pulse2.enabled && console.apu.pulse2.dacEnabled) << 1) |
                 ((console.apu.wave.enabled && console.apu.wave.dacEnabled) << 2) |
                 ((console.apu.noise.enabled && console.apu.noise.dacEnabled) << 3);

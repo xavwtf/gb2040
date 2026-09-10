@@ -8,37 +8,43 @@ Timer::Timer(Console& console)
 : console(console) {  }
     
 void Timer::incTimers(size_t cycles) {
-    sysCounter += cycles;
+    static const uint8_t selBits[4] = { 9, 3, 5, 7 };
 
-    bool timerEnabled = tac & 0x04;
-    if (!timerEnabled) return;
-    
-    uint8_t old = tima;
+    uint32_t oldSys = sysCounter;
+    uint32_t newSys = oldSys + (uint32_t)cycles;
+    sysCounter = (uint16_t)newSys;
 
-    static const uint16_t freqRates[4] = { 1024, 16, 64, 256 };
-    uint16_t freq = freqRates[tac & 0x03];
+    if (overflowDelay > 0) {
+        if ((int)cycles >= overflowDelay) {
+            oldSys += (uint32_t)overflowDelay;
+            cycles -= (size_t)overflowDelay;
+            overflowDelay = 0;
+            tima = tma;
+            console.requestInterrupt(Interrupt::TIMER);
+            if (cycles == 0) return;
+        } else {
+            overflowDelay -= (int)cycles;
+            return;
+        }
+    }
 
-    timaCounter += cycles;
-    bool timaOverflowN = false;
+    if (!(tac & 0x04)) return;
 
-    while (timaCounter >= freq) {
-        timaCounter -= freq;
+    uint8_t bit = selBits[tac & 0x03];
+    uint32_t period = 1u << (bit + 1);
 
+    uint32_t increments = (newSys / period) - (oldSys / period);
+
+    while (increments--) {
         if (tima == 0xFF) {
             tima = 0x00;
-            timaOverflowN = true;
+            overflowDelay = 4;
+            
+            break;
         } else {
             tima++;
         }
     }
-
-    if (timaOverflow) {
-        timaOverflow = false;
-        tima = tma;
-        console.requestInterrupt(Interrupt::TIMER);
-    }
-
-    if (timaOverflowN) timaOverflow = true;
 }
 
 uint8_t Timer::getDiv(void) {

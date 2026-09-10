@@ -75,7 +75,7 @@ void MMU::write8(uint16_t addr, uint8_t val) {
         case 0x5: // 0x5000-0x5FFF
         case 0x6: // 0x6000-0x6FFF
         case 0x7: // 0x7000-0x7FFF
-            if (addr <= 0x100 && bootRomMapped) return;
+            if (addr < 0x100 && bootRomMapped) return;
             console.mbc->write8(addr, val);
             return;
         case 0x8: // 0x8000-0x8FFF

@@ -113,12 +113,13 @@ uint8_t CPU::PUSH_AF(void) { return PUSH_r16(AF); }
 
 uint8_t CPU::DI(void) {
     ime = false;
+    eiDelay = 0;
 
     return 1;
 }
 
 uint8_t CPU::EI(void) {
-    eiPending = true;
+    eiDelay = 2;
 
     return 1;
 }

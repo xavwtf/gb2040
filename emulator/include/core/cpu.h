@@ -55,7 +55,7 @@ private:
     bool halted = false;
     bool haltBug = false;
 
-    bool eiPending = false; // interrupts only enable *after 1 instruction*
+    int eiDelay = 0;
 
     size_t forceCycles = 0;
 
@@ -721,13 +721,13 @@ private:
     uint8_t SET_7_mHL(void);
     uint8_t SET_7_A(void);
 
-    RegisterPair AF, BC, DE, HL; // general use registers
+    RegisterPair AF{}, BC{}, DE{}, HL{}; // general use registers
     uint16_t SP = 0xFFFE;
     uint16_t PC = 0x0000; // PSW registers
 
     // instruction set
-    OpcodeImpl instrTable[256];
-    OpcodeImpl cbInstrTable[256];
+    OpcodeImpl instrTable[256]{};
+    OpcodeImpl cbInstrTable[256]{};
 };
 
 } // namespace GB2040::Core

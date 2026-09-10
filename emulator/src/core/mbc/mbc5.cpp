@@ -57,20 +57,22 @@ void MBC5::write8(uint16_t addr, uint8_t val) {
         ramEnabled = ((val & 0x0F) == 0x0A);
         return;
     } else if (0x2000 <= addr && addr <= 0x2FFF) {
-        uint16_t maxBank = (header.romSize * 1024 / 0x4000) - 1;
+        uint16_t numBanks = (uint16_t)(2u << header.romSize);
+        uint16_t maxBank = numBanks - 1;
         romBank = (romBank & 0x100) | val;
 
         romBank &= maxBank;
         return;
     } else if (0x3000 <= addr && addr <= 0x3FFF) {
-        uint16_t maxBank = (header.romSize * 1024 / 0x4000) - 1;
+        uint16_t numBanks = (uint16_t)(2u << header.romSize);
+        uint16_t maxBank = numBanks - 1;
         romBank = (romBank & 0xFF) | ((val & 0x01) << 8);
 
         romBank &= maxBank;
         return;
     } else if (0x4000 <= addr && addr <= 0x5FFF) {
-        if (val <= 0x0F) {
-            uint8_t maxRamBank = (ramSize / 0x2000) - 1;
+        if (val <= 0x0F && ramSize >= 0x2000) {
+            uint8_t maxRamBank = (uint8_t)(ramSize / 0x2000) - 1;
             ramBank = val & maxRamBank;
         }
     }

@@ -34,6 +34,7 @@ uint16_t CPU::pop(void) {
 }
 
 void CPU::initInstrTable(void) {
+    for (int i = 0; i < 256; i++) instrTable[i] = nullptr;
     instrTable[0x00] = &CPU::NOP;
     instrTable[0x10] = &CPU::STOP;
     instrTable[0x20] = &CPU::JR_NZ_s8;
@@ -641,11 +642,11 @@ uint16_t CPU::fetch16(void) {
 }
 
 bool CPU::checkInterrupts(void) {
-    halted = false;
-    stopped = false;
-    if (!ime) return false;
-
     uint8_t pending = intFlag & ie;
+
+    if (pending) halted = false;
+    if (pending & 0x10) stopped = false;
+    if (!ime) return false;
 
     if (!pending) return false;
 
@@ -747,9 +748,9 @@ size_t CPU::tick(void) {
         return c;
     }
 
-    if (eiPending) {
-        ime = true;
-        eiPending = false;
+    if (eiDelay > 0) {
+        eiDelay--;
+        if (eiDelay == 0) ime = true;
     }
 
     bool interruptServiced = checkInterrupts();
