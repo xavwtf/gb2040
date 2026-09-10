@@ -177,7 +177,7 @@ public:
         if (gpio_get(PIN_INPUT_UP) == 0) console.pressButton(GB2040::Core::Button::UP);
         else console.releaseButton(GB2040::Core::Button::UP);
 
-        if (gpio_get(PIN_INPUT_DOWN) == 0) { printf("DOWN pressed\n"); console.pressButton(GB2040::Core::Button::DOWN); }
+        if (gpio_get(PIN_INPUT_DOWN) == 0) console.pressButton(GB2040::Core::Button::DOWN);
         else console.releaseButton(GB2040::Core::Button::DOWN);
 
         if (gpio_get(PIN_INPUT_LEFT) == 0) console.pressButton(GB2040::Core::Button::LEFT);
