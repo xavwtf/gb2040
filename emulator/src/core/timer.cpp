@@ -30,16 +30,15 @@ void Timer::incTimers(size_t cycles) {
 
     if (!(tac & 0x04)) return;
 
-    uint8_t bit = selBits[tac & 0x03];
-    uint32_t period = 1u << (bit + 1);
+    uint8_t shift = selBits[tac & 0x03] + 1;
 
-    uint32_t increments = (newSys / period) - (oldSys / period);
+    uint32_t increments = (newSys >> shift) - (oldSys >> shift);
 
     while (increments--) {
         if (tima == 0xFF) {
             tima = 0x00;
             overflowDelay = 4;
-            
+
             break;
         } else {
             tima++;

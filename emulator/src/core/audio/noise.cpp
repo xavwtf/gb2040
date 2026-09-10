@@ -6,11 +6,13 @@
 namespace GB2040::Core
 {
 
-void NoiseChannel::tick(void) {
-    timer--;
-
-    if (timer == 0) {
-        timer = divisors[clockDiv] << clockShift;
+void NoiseChannel::tick(uint32_t cycles) {
+    uint32_t remaining = timer ? timer : 65536u;
+    uint32_t n = cycles;
+    while (n >= remaining) {
+        n -= remaining;
+        remaining = (uint16_t)(divisors[clockDiv] << clockShift);
+        if (remaining == 0) remaining = 65536u;
 
         uint8_t feedback = (lfsr & 0x01) ^ ((lfsr >> 1) & 0x01);
 
@@ -26,6 +28,7 @@ void NoiseChannel::tick(void) {
             lfsr &= 0x7FFF;
         }
     }
+    timer = (uint16_t)(remaining - n);
 }
 
 void NoiseChannel::lenTick(void) {

@@ -6,15 +6,16 @@
 namespace GB2040::Core
 {
 
-void WaveChannel::tick(void) {
-    timer--;
-
-    if (timer == 0) {
-        timer = getFreq();
+void WaveChannel::tick(uint32_t cycles) {
+    uint32_t remaining = timer ? timer : 65536u;
+    uint32_t n = cycles;
+    while (n >= remaining) {
+        n -= remaining;
+        remaining = getFreq();
 
         if (!enabled || !dacEnabled) {
             outputSample = 0;
-            return;
+            continue;
         }
 
         waveformPtr = (waveformPtr + 1) & 31;
@@ -30,7 +31,8 @@ void WaveChannel::tick(void) {
         else waveSample = 0;
 
         outputSample = waveSample;
-    };
+    }
+    timer = (uint16_t)(remaining - n);
 }
 
 void WaveChannel::lenTick(void) {

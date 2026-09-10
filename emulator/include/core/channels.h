@@ -12,7 +12,7 @@ class APU;
 
 class PulseChannel {
 public:
-    void tick(void);
+    void tick(uint32_t);
     void lenTick(void);
     uint8_t readReg(uint8_t);
     void writeReg(uint8_t, uint8_t);
@@ -62,7 +62,7 @@ private:
 
 class WaveChannel {
 public:
-    void tick(void);
+    void tick(uint32_t);
     void lenTick(void);
     uint8_t readReg(uint8_t);
     void writeReg(uint8_t, uint8_t);
@@ -96,7 +96,7 @@ private:
 
 class NoiseChannel {
 public:
-    void tick(void);
+    void tick(uint32_t);
     void lenTick(void);
     uint8_t readReg(uint8_t);
     void writeReg(uint8_t, uint8_t);

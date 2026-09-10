@@ -21,12 +21,10 @@ void APU::tick(size_t cycles) {
         uint32_t untilFsEvent = divApuTimer;
         uint32_t batch = (cycles < untilFsEvent) ? static_cast<uint32_t>(cycles) : untilFsEvent;
 
-        for (uint32_t i = 0; i < batch; i++) {
-            pulse1.tick();
-            pulse2.tick();
-            wave.tick();
-            noise.tick();
-        }
+        pulse1.tick(batch);
+        pulse2.tick(batch);
+        wave.tick(batch);
+        noise.tick(batch);
 
         cycles -= batch;
         divApuTimer -= batch;

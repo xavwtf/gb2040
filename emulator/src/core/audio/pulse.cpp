@@ -6,13 +6,15 @@
 namespace GB2040::Core
 {
 
-void PulseChannel::tick(void) {
-    timer--;
-
-    if (timer == 0) {
-        timer = getFreq();
-        dutyPos = (dutyPos + 1) % 8;
+void PulseChannel::tick(uint32_t cycles) {
+    uint32_t remaining = timer ? timer : 65536u;
+    uint32_t n = cycles;
+    while (n >= remaining) {
+        n -= remaining;
+        dutyPos = (dutyPos + 1) & 7;
+        remaining = getFreq();
     }
+    timer = (uint16_t)(remaining - n);
 }
 
 void PulseChannel::lenTick(void) {
