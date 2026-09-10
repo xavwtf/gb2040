@@ -13,16 +13,16 @@ class Console;
 
 class MMU {
 public:
-    MMU(Console&);
+    MMU(Console& console);
 
-    uint8_t read8(uint16_t);
-    uint16_t read16(uint16_t);
+    uint8_t read8(uint16_t addr);
+    uint16_t read16(uint16_t addr);
 
-    void write8(uint16_t, uint8_t);
-    void write16(uint16_t, uint16_t);
+    void write8(uint16_t addr, uint8_t val);
+    void write16(uint16_t addr, uint16_t val);
 
-    uint8_t readIo(uint16_t);
-    void writeIo(uint16_t, uint8_t);
+    uint8_t readIo(uint16_t port);
+    void writeIo(uint16_t port, uint8_t val);
 
     void setRomCache(const uint8_t* data, size_t size) {
         romData = data;

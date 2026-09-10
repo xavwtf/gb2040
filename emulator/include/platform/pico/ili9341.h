@@ -42,17 +42,17 @@ enum class Command {
 
 class ILI9341 {
 public:
-    ILI9341(uint, uint, uint, uint, uint, uint);
+    ILI9341(uint sck, uint sda, uint cs, uint dc, uint rst, uint bl);
 
     void clear(void);
-    void drawFramebuffer(GB2040::Core::Framebuffer&, uint, uint);
+    void drawFramebuffer(GB2040::Core::Framebuffer& fb, uint xOffset, uint yOffset);
 
     void waitDMA(void);
 private:
     void init(void);
-    void sendCmd(Command, std::initializer_list<uint8_t> = {});
-    void sendData(void*, size_t);
-    void txBlock(uint, uint, uint, uint, void*, size_t);
+    void sendCmd(Command command, std::initializer_list<uint8_t> params = {});
+    void sendData(void* data, size_t count);
+    void txBlock(uint x1, uint y1, uint x2, uint y2, void* data, size_t count);
 
     uint pinSck;
     uint pinSda;

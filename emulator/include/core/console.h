@@ -64,7 +64,7 @@ enum class Button : uint8_t {
 class Console {
 
 public:
-    Console(Platform*, ROMSource*);
+    Console(Platform* platform, ROMSource* romSource);
     ~Console(void);
 
     Platform* platform;
@@ -105,11 +105,11 @@ public:
     };
 
     size_t tick(void);
-    size_t doTicks(size_t);
+    size_t doTicks(size_t cycles);
     void run(void);
-    void requestInterrupt(Interrupt);
-    void pressButton(Button);
-    void releaseButton(Button);
+    void requestInterrupt(Interrupt interrupt);
+    void pressButton(Button button);
+    void releaseButton(Button button);
     uint8_t getInputRegister(void);
     void save(void);
 };

@@ -29,20 +29,14 @@ class PPU {
 public:
     PPU(Console& console);
 
-    void tick(size_t);
+    void tick(size_t cycles);
     void renderScanline(void);
 
-    uint8_t readVram(uint16_t);
-    void writeVram(uint16_t, uint8_t);
+    uint8_t readVram(uint16_t addr);
+    void writeVram(uint16_t addr, uint8_t val);
 
-    uint8_t readCramBg(void);
-    void writeCramBg(uint8_t);
-
-    uint8_t readCramObj(void);
-    void writeCramObj(uint8_t);
-
-    uint8_t readOam(uint16_t);
-    void writeOam(uint16_t, uint8_t);
+    uint8_t readOam(uint16_t addr);
+    void writeOam(uint16_t addr, uint8_t val);
 
     uint8_t readStat(void);
 private:
@@ -53,19 +47,19 @@ private:
         0x0000
     };
 
-    uint16_t getMapBase(PPULayer);
+    uint16_t getMapBase(PPULayer layer);
 
-    void renderScanlineLayer(PPULayer);
+    void renderScanlineLayer(PPULayer layer);
     void renderScanlineObjects(void);
-    void renderScanlinePixel(PPULayer, uint8_t x, uint16_t rowOffset);
-    void sortSprites(Sprite*, size_t);
+    void renderScanlinePixel(PPULayer layer, uint8_t x, uint16_t rowOffset);
+    void sortSprites(Sprite* sprites, size_t count);
 
     void hBlank(void);
     void vBlank(void);
     void oamScan(void);
     void pixelTransfer(void);
 
-    void oamDma(uint8_t);
+    void oamDma(uint8_t high);
 
     friend MMU; // for IO ports
 

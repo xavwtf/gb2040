@@ -16,13 +16,13 @@ class Console;
 
 class APU {
 public:
-    APU(Console&);
+    APU(Console& console);
 
-    void tick(size_t);
-    void setEnabled(bool);
+    void tick(size_t cycles);
+    void setEnabled(bool enabled);
 
 private:
-    StereoSample mix(uint8_t, uint8_t, uint8_t, uint8_t);
+    StereoSample mix(uint8_t pulse1, uint8_t pulse2, uint8_t wave, uint8_t noise);
 
     friend MMU; // IO ports
 

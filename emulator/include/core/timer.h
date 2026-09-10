@@ -10,14 +10,14 @@ class Console; // forward declaration
 
 class Timer {
 public:
-    Timer(Console&);
+    Timer(Console& console);
 
     uint8_t tima = 0;
 
     uint8_t tac = 0;
     uint8_t tma = 0;
 
-    void incTimers(size_t);
+    void incTimers(size_t cycles);
     void resetSysCounter(void);
     uint8_t getDiv(void);
 private:

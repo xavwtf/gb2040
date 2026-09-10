@@ -51,12 +51,12 @@ struct RTC {
 
 class IMBC { // abstract
 public:
-    virtual uint8_t read8(uint16_t) = 0;
+    virtual uint8_t read8(uint16_t addr) = 0;
     virtual uint16_t read16(uint16_t addr) {
         return read8(addr) | (read8(addr + 1) << 8);
     }
 
-    virtual void write8(uint16_t, uint8_t) = 0;
+    virtual void write8(uint16_t addr, uint8_t val) = 0;
     virtual void write16(uint16_t addr, uint8_t val) {
         write8(addr, val & 0xFF);
         write8(addr + 1, val >> 8);
@@ -69,8 +69,8 @@ class MBC1 : public IMBC {
 public:
     MBC1(Console& console, ROMSource* romSource, CartridgeHeader& cartHeader);
 
-    uint8_t read8(uint16_t) override;
-    void write8(uint16_t, uint8_t) override;
+    uint8_t read8(uint16_t addr) override;
+    void write8(uint16_t addr, uint8_t val) override;
 
     void save(void) override;
 private:
@@ -93,8 +93,8 @@ class MBC2 : public IMBC {
 public:
     MBC2(Console& console, ROMSource* romSource, CartType cartType);
 
-    uint8_t read8(uint16_t) override;
-    void write8(uint16_t, uint8_t) override;
+    uint8_t read8(uint16_t addr) override;
+    void write8(uint16_t addr, uint8_t val) override;
 
     void save(void) override;
 private:
@@ -113,16 +113,16 @@ class MBC3 : public IMBC {
 public:
     MBC3(Console& console, ROMSource* romSource, CartType cartType);
 
-    uint8_t read8(uint16_t) override;
-    void write8(uint16_t, uint8_t) override;
+    uint8_t read8(uint16_t addr) override;
+    void write8(uint16_t addr, uint8_t val) override;
 
     void save(void) override;
 private:
     void tickRTC(void);
     RTC parseRTC(void);
 
-    uint8_t readRTC(uint8_t);
-    void writeRTC(uint8_t, uint8_t);
+    uint8_t readRTC(uint8_t reg);
+    void writeRTC(uint8_t reg, uint8_t val);
 
     Console& console;
     CartType cartType;
@@ -145,8 +145,8 @@ class MBC5 : public IMBC {
 public:
     MBC5(Console& console, ROMSource* romSource, CartridgeHeader& cartHeader);
 
-    uint8_t read8(uint16_t) override;
-    void write8(uint16_t, uint8_t) override;
+    uint8_t read8(uint16_t addr) override;
+    void write8(uint16_t addr, uint8_t val) override;
 
     void save(void) override;
 private:
@@ -166,9 +166,9 @@ class NoMBC : public IMBC {
 public:
     NoMBC(Console& console, ROMSource* romSource, CartType cartType);
 
-    uint8_t read8(uint16_t) override;
+    uint8_t read8(uint16_t addr) override;
 
-    void write8(uint16_t, uint8_t) override;
+    void write8(uint16_t addr, uint8_t val) override;
 
 private:
     Console& console;

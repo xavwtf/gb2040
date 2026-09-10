@@ -40,7 +40,7 @@ public:
     void init(MMU& mmu, PPU& ppu);
     size_t tick(void);
     char* getDebug(void);
-    void yieldCycles(size_t);
+    void yieldCycles(size_t cycles);
 
     bool ime = false;
     uint8_t ie = 0;
@@ -59,10 +59,10 @@ private:
 
     size_t forceCycles = 0;
 
-    uint8_t execute(uint8_t);
+    uint8_t execute(uint8_t opcode);
 
     // stack helpers
-    void push(uint16_t);
+    void push(uint16_t val);
     uint16_t pop(void);
 
     uint8_t fetch8(void);
@@ -83,39 +83,39 @@ private:
     void initCbInstrTable(void);
 
     // opcode helpers
-    uint8_t LD_r16_d16(RegisterPair&);
-    uint8_t LD_mr16_A(RegisterPair&, int8_t = 0);
-    uint8_t INC_r16(RegisterPair&);
-    uint8_t DEC_r16(RegisterPair&);
-    uint8_t INC_r8(uint8_t&);
-    uint8_t DEC_r8(uint8_t&);
-    uint8_t LD_r8_d8(uint8_t&);
-    uint8_t ADD_HL_r16(RegisterPair&);
-    uint8_t LD_A_mr16(RegisterPair&, int8_t = 0);
-    uint8_t JR_F_s8(bool);
+    uint8_t LD_r16_d16(RegisterPair& reg);
+    uint8_t LD_mr16_A(RegisterPair& reg, int8_t offset = 0);
+    uint8_t INC_r16(RegisterPair& reg);
+    uint8_t DEC_r16(RegisterPair& reg);
+    uint8_t INC_r8(uint8_t& reg);
+    uint8_t DEC_r8(uint8_t& reg);
+    uint8_t LD_r8_d8(uint8_t& reg);
+    uint8_t ADD_HL_r16(RegisterPair& reg);
+    uint8_t LD_A_mr16(RegisterPair& reg, int8_t offset = 0);
+    uint8_t JR_F_s8(bool flag);
 
-    uint8_t LD_r8_r8(uint8_t&, uint8_t&);
-    uint8_t LD_r8_mHL(uint8_t&);
-    uint8_t LD_mHL_r8(uint8_t&);
+    uint8_t LD_r8_r8(uint8_t& reg1, uint8_t& reg2);
+    uint8_t LD_r8_mHL(uint8_t& reg);
+    uint8_t LD_mHL_r8(uint8_t& reg);
 
-    uint8_t ADD_A_r8(uint8_t&);
-    uint8_t SUB_r8(uint8_t&);
-    uint8_t AND_r8(uint8_t&);
-    uint8_t OR_r8(uint8_t&);
-    uint8_t ADC_A_r8(uint8_t&);
-    uint8_t SBC_A_r8(uint8_t&);
-    uint8_t XOR_r8(uint8_t&);
-    uint8_t CP_r8(uint8_t&);
+    uint8_t ADD_A_r8(uint8_t& reg);
+    uint8_t SUB_r8(uint8_t& reg);
+    uint8_t AND_r8(uint8_t& reg);
+    uint8_t OR_r8(uint8_t& reg);
+    uint8_t ADC_A_r8(uint8_t& reg);
+    uint8_t SBC_A_r8(uint8_t& reg);
+    uint8_t XOR_r8(uint8_t& reg);
+    uint8_t CP_r8(uint8_t& reg);
 
-    uint8_t RET_F(bool);
+    uint8_t RET_F(bool flag);
 
-    uint8_t PUSH_r16(RegisterPair&);
-    uint8_t POP_r16(RegisterPair&);
+    uint8_t PUSH_r16(RegisterPair& reg);
+    uint8_t POP_r16(RegisterPair& reg);
 
-    uint8_t JP_F_a16(bool);
-    uint8_t CALL_F_a16(bool);
+    uint8_t JP_F_a16(bool flag);
+    uint8_t CALL_F_a16(bool flag);
 
-    uint8_t RST_n(uint8_t);
+    uint8_t RST_n(uint8_t n);
 
     // opcodes
     uint8_t NOP(void);
@@ -419,7 +419,7 @@ private:
     uint8_t RST_7(void);
 
     // cb opcodes
-    uint8_t RLC(uint8_t&);
+    uint8_t RLC(uint8_t& reg);
     uint8_t RLC_B(void);
     uint8_t RLC_C(void);
     uint8_t RLC_D(void);
@@ -429,7 +429,7 @@ private:
     uint8_t RLC_mHL(void);
     uint8_t RLC_A(void);
 
-    uint8_t RRC(uint8_t&);
+    uint8_t RRC(uint8_t& reg);
     uint8_t RRC_B(void);
     uint8_t RRC_C(void);
     uint8_t RRC_D(void);
@@ -439,7 +439,7 @@ private:
     uint8_t RRC_mHL(void);
     uint8_t RRC_A(void);
 
-    uint8_t RL(uint8_t&);
+    uint8_t RL(uint8_t& reg);
     uint8_t RL_B(void);
     uint8_t RL_C(void);
     uint8_t RL_D(void);
@@ -449,7 +449,7 @@ private:
     uint8_t RL_mHL(void);
     uint8_t RL_A(void);
 
-    uint8_t RR(uint8_t&);
+    uint8_t RR(uint8_t& reg);
     uint8_t RR_B(void);
     uint8_t RR_C(void);
     uint8_t RR_D(void);
@@ -459,7 +459,7 @@ private:
     uint8_t RR_mHL(void);
     uint8_t RR_A(void);
 
-    uint8_t SLA(uint8_t&);
+    uint8_t SLA(uint8_t& reg);
     uint8_t SLA_B(void);
     uint8_t SLA_C(void);
     uint8_t SLA_D(void);
@@ -469,7 +469,7 @@ private:
     uint8_t SLA_mHL(void);
     uint8_t SLA_A(void);
 
-    uint8_t SRA(uint8_t&);
+    uint8_t SRA(uint8_t& reg);
     uint8_t SRA_B(void);
     uint8_t SRA_C(void);
     uint8_t SRA_D(void);
@@ -479,7 +479,7 @@ private:
     uint8_t SRA_mHL(void);
     uint8_t SRA_A(void);
 
-    uint8_t SWAP(uint8_t&);
+    uint8_t SWAP(uint8_t& reg);
     uint8_t SWAP_B(void);
     uint8_t SWAP_C(void);
     uint8_t SWAP_D(void);
@@ -489,7 +489,7 @@ private:
     uint8_t SWAP_mHL(void);
     uint8_t SWAP_A(void);
 
-    uint8_t SRL(uint8_t&);
+    uint8_t SRL(uint8_t& reg);
     uint8_t SRL_B(void);
     uint8_t SRL_C(void);
     uint8_t SRL_D(void);
@@ -499,7 +499,7 @@ private:
     uint8_t SRL_mHL(void);
     uint8_t SRL_A(void);
 
-    uint8_t BIT(uint8_t, uint8_t&);
+    uint8_t BIT(uint8_t index, uint8_t& reg);
 
     uint8_t BIT_0_B(void);
     uint8_t BIT_0_C(void);
@@ -573,7 +573,7 @@ private:
     uint8_t BIT_7_mHL(void);
     uint8_t BIT_7_A(void);
 
-    uint8_t RES(uint8_t, uint8_t&);
+    uint8_t RES(uint8_t index, uint8_t& reg);
 
     uint8_t RES_0_B(void);
     uint8_t RES_0_C(void);
@@ -647,7 +647,7 @@ private:
     uint8_t RES_7_mHL(void);
     uint8_t RES_7_A(void);
 
-    uint8_t SET(uint8_t, uint8_t&);
+    uint8_t SET(uint8_t index, uint8_t& reg);
 
     uint8_t SET_0_B(void);
     uint8_t SET_0_C(void);
