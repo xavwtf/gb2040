@@ -9,9 +9,12 @@
 #include <string>
 #include <array>
 #include <filesystem>
+#include <vector>
 #include <stdio.h>
 #include <fstream>
 #include <SDL3/SDL.h>
+
+#define CHUNK_TIME SAMPLE_RATE / 60
 
 namespace GB2040::Platform
 {
@@ -297,15 +300,12 @@ public:
     }
 
     void pushSamples(GB2040::Core::StereoSample* samples, size_t count) override {
-        int queued = SDL_GetAudioStreamAvailable(audioStream) / sizeof(GB2040::Core::StereoSample);
+        audioBuffer.insert(audioBuffer.end(), samples, samples + count);
 
-        if (queued < SAMPLE_RATE / 10) {
-            size_t padCount = (SAMPLE_RATE / 10) - queued;
-            std::vector<GB2040::Core::StereoSample> silence(padCount, { 128, 128 });
-            SDL_PutAudioStreamData(audioStream, silence.data(), padCount * sizeof(GB2040::Core::StereoSample));
+        while (audioBuffer.size() >= CHUNK_TIME) {
+            SDL_PutAudioStreamData(audioStream, audioBuffer.data(), CHUNK_TIME * sizeof(GB2040::Core::StereoSample));
+            audioBuffer.erase(audioBuffer.begin(), audioBuffer.begin() + CHUNK_TIME);
         }
-
-        SDL_PutAudioStreamData(audioStream, samples, count * sizeof(GB2040::Core::StereoSample));
     }
 
 private:
@@ -321,6 +321,8 @@ private:
 
     bool fullscreen = false;
     bool audioEnabled = true;
+
+    std::vector<GB2040::Core::StereoSample> audioBuffer;
 };
 
 Platform* createPlatform(void) {

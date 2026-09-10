@@ -95,8 +95,8 @@ StereoSample APU::mix(uint8_t pulse1, uint8_t pulse2, uint8_t wave, uint8_t nois
     if (pan & 0x40) rSum += wave;
     if (pan & 0x80) rSum += noise;
 
-    sample.l = std::min<uint8_t>(255, static_cast<uint8_t>(lSum * lVolume / 7));
-    sample.r = std::min<uint8_t>(255, static_cast<uint8_t>(rSum * rVolume / 7));
+    sample.l = static_cast<uint8_t>(128 + lSum * lVolume / 7);
+    sample.r = static_cast<uint8_t>(128 + rSum * rVolume / 7);
 
     return sample;
 }

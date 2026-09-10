@@ -47,6 +47,8 @@ uint16_t WaveChannel::getFreq(void) {
 }
 
 uint8_t WaveChannel::out(void) {
+    if (!enabled || !dacEnabled) return 0;
+
     return outputSample;
 }
 
