@@ -14,6 +14,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <new>
 #include <string>
 
 #ifdef HAS_EMBEDDED_ROM
@@ -69,6 +70,38 @@ public:
     }
 };
 #endif
+
+class DummyRAM : public RAMSource {
+public:
+    DummyRAM(size_t size) : len(size) {
+        buf = (size > 0) ? new uint8_t[size]() : nullptr;
+    }
+
+    ~DummyRAM(void) override {
+        delete[] buf;
+    }
+
+    void read(uint32_t addr, uint8_t* out, size_t size) override {
+        if (!buf || addr + size > len) {
+            memset(out, 0xFF, size);
+            return;
+        }
+        memcpy(out, buf + addr, size);
+    }
+
+    size_t size(void) override {
+        return len;
+    }
+
+    void write8(uint32_t addr, uint8_t* in, size_t size) override {
+        if (!buf || addr + size > len) return;
+        memcpy(buf + addr, in, size);
+    }
+
+private:
+    uint8_t* buf = nullptr;
+    size_t len = 0;
+};
 
 using namespace GB2040::Platform::Pico;
 
@@ -187,7 +220,7 @@ public:
     }
 
     RAMSource* getSave(size_t size) override {
-        return nullptr;
+        return new DummyRAM(size);
     }
 
     void saveData(RAMSource* data) override {

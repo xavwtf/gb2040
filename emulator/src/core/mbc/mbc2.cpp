@@ -26,6 +26,7 @@ uint8_t MBC2::read8(uint16_t addr) {
         romSource->read(romAddr, &v, 1);
         return v;
     } else if (0xA000 <= addr && addr <= 0xBFFF && ramEnabled) {
+        if (!ramSource) return 0xFF;
         // return RAM instead
         addr = (addr - 0xA000) & 0x1FF; // echo
         
@@ -45,6 +46,7 @@ void MBC2::write8(uint16_t addr, uint8_t val) {
             ramEnabled = (val & 0x0F) == 0x0A;
         }
     } else if (0xA000 <= addr && addr <= 0xBFFF && ramEnabled) {
+        if (!ramSource) return;
         addr = (addr - 0xA000) & 0x1FF;
         uint8_t shift = addr % 2 == 0 ? 0 : 4;
 
@@ -59,7 +61,7 @@ void MBC2::write8(uint16_t addr, uint8_t val) {
 }
 
 void MBC2::save() {
-    if (cartType == CartType::MBC2_BATTERY) {
+    if (cartType == CartType::MBC2_BATTERY && ramSource) {
         console.platform->saveData(ramSource);
     }
 }

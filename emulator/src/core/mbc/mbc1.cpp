@@ -44,7 +44,7 @@ uint8_t MBC1::read8(uint16_t addr) {
         romSource->read(romAddr, &v, 1);
         return v;
     } else if (0xA000 <= addr && addr <= 0xBFFF) {
-        if (!ramEnabled) return 0xFF;
+        if (!ramEnabled || !ramSource) return 0xFF;
 
         uint32_t bank = (mode == 1) ? ramBank & 0x03 : 0;
         uint32_t ramAddr = bank * 0x2000 + (addr - 0xA000);
@@ -72,7 +72,7 @@ void MBC1::write8(uint16_t addr, uint8_t val) {
     } else if (0x6000 <= addr && addr <= 0x7FFF) {
         mode = val & 0x01;
     } else if (0xA000 <= addr && addr <= 0xBFFF) {
-        if (!ramEnabled) return;
+        if (!ramEnabled || !ramSource) return;
 
         uint32_t bank = (mode == 1) ? ramBank & 0x03 : 0;
         uint32_t ramAddr = bank * 0x2000 + (addr - 0xA000);
@@ -82,7 +82,7 @@ void MBC1::write8(uint16_t addr, uint8_t val) {
 }
 
 void MBC1::save(void) {
-    if (header.cartType != CartType::MBC1_RAM_BATTERY) return;
+    if (header.cartType != CartType::MBC1_RAM_BATTERY || !ramSource) return;
 
     console.platform->saveData(ramSource);
 }

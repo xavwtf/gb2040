@@ -40,7 +40,7 @@ uint8_t MBC5::read8(uint16_t addr) {
         romSource->read(romAddr, &v, 1);
         return v;
     } else if (0xA000 <= addr && addr <= 0xBFFF) {
-        if (!ramEnabled) return 0xFF;
+        if (!ramEnabled || !ramSource) return 0xFF;
 
         uint32_t ramAddr = ramBank * 0x2000 + (addr - 0xA000);
         uint8_t v;
@@ -78,7 +78,7 @@ void MBC5::write8(uint16_t addr, uint8_t val) {
     }
 
     if (0xA000 <= addr && addr <= 0xBFFF) {
-        if (!ramEnabled) return;
+        if (!ramEnabled || !ramSource) return;
 
         uint32_t ramAddr = ramBank * 0x2000 + (addr - 0xA000);
         ramSource->write8(ramAddr, &val, 1);
@@ -88,6 +88,8 @@ void MBC5::write8(uint16_t addr, uint8_t val) {
 void MBC5::save(void) {
     if (header.cartType != CartType::MBC5_RAM_BATTERY &&
          header.cartType != CartType::MBC5_RUMBLE_RAM_BATTERY) return;
+
+    if (!ramSource) return;
 
     console.platform->saveData(ramSource);
 }

@@ -34,7 +34,7 @@ uint8_t MBC3::read8(uint16_t addr) {
         romSource->read(romAddr, &v, 1);
         return v;
     } else if (0xA000 <= addr && addr <= 0xBFFF) {
-        if (!ramEnabled) return 0xFF;
+        if (!ramEnabled || !ramSource) return 0xFF;
         if (rtcSelected) return readRTC(rtcReg);
 
         uint32_t ramAddr = ramBank * 0x2000 + (addr - 0xA000);
@@ -79,7 +79,7 @@ void MBC3::write8(uint16_t addr, uint8_t val) {
     }
 
     if (0xA000 <= addr && addr <= 0xBFFF) {
-        if (!ramEnabled) return;
+        if (!ramEnabled || !ramSource) return;
         if (rtcSelected) {
             writeRTC(rtcReg, val);
             return;
@@ -95,6 +95,8 @@ void MBC3::save(void) {
          cartType != CartType::MBC3_TIMER_BATTERY &&
           cartType != CartType::MBC3_TIMER_RAM_BATTERY) return;
 
+    if (!ramSource) return;
+
     ramSource->write8(
         ramSource->size() - sizeof(RTC),
         reinterpret_cast<uint8_t*>(&rtc),
@@ -106,7 +108,9 @@ void MBC3::save(void) {
 
 RTC MBC3::parseRTC(void) {
     RTC parsed{};
-    ramSource->read(ramSource->size() - sizeof(RTC), reinterpret_cast<uint8_t*>(&parsed), sizeof(RTC));
+    if (ramSource) {
+        ramSource->read(ramSource->size() - sizeof(RTC), reinterpret_cast<uint8_t*>(&parsed), sizeof(RTC));
+    }
 
     if (parsed.lastUpdateUs == 0) {
         parsed.lastUpdateUs = console.platform->getClock();
